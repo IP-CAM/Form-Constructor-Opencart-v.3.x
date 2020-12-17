@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<name>Конструктор форм</name>
+	<code>form-creator</code>
+	<version>3.0</version>
+	<author>PROWEBBER</author>
+	<link>https://prowebber.ru/</link>
+	
+	<file path="admin/controller/common/column_left.php">
+		<operation error="skip">
+			<search><![CDATA[
+			$marketplace = array();
+			]]></search>
+			<add position="before"><![CDATA[
+			if ($this->user->hasPermission('access', 'extension/module/formcreator')) {
+				$this->load->language('extension/module/formcreator');
+				$this->load->model('extension/module/formcreator');
+				if ($this->model_extension_module_formcreator->getTotalFeedbacks() !== false) {
+					$feedback_total = $this->model_extension_module_formcreator->getTotalFeedbacks(array('filter_noread' => 'noread'));
+				} else {
+					$feedback_total = '0';
+				}
+				
+				$data['menus'][] = array(
+					'id'       => 'menu-forms',
+					'icon'	   => 'fa-comment', 
+					'name'	   => $this->language->get('text_notif_feedbacks').' ('.$feedback_total.')',
+					'href'     => $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'].'&sort=date&order=DESC', true),
+					'children' => ''
+				);
+			}	
+			]]></add>
+		</operation>
+	</file>
+
+</modification>
