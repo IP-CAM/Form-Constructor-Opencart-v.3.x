@@ -59,6 +59,7 @@ $_['text_more'] = 'view more';
 $_['text_nomassage'] = 'No messages';
 $_['text_entry_text'] = 'Enter text';
 $_['text_setting_form'] = 'Setting form';
+$_['text_module_not_installed'] = 'For start activate module!';
 //popup
 $_['text_massage_number'] = 'Message №';
 $_['text_popup_value'] = 'Value';

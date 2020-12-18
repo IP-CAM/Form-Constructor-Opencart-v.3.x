@@ -58,6 +58,7 @@ $_['text_more'] = 'Детальнее';
 $_['text_nomassage'] = 'Пока еще никто не писал';
 $_['text_entry_text'] = 'Введите текст';
 $_['text_setting_form'] = 'Настроить форму';
+$_['text_module_not_installed'] = 'Для начала активируйте модуль!';
 //popup
 $_['text_massage_number'] = 'Сообщение №';
 $_['text_popup_value'] = 'Поле';

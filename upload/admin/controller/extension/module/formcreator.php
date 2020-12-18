@@ -274,104 +274,110 @@ class ControllerExtensionModuleFormcreator extends Controller {
 			'start' 		=> ($page - 1) * $this->config->get('config_limit_admin'),
 			'limit' 		=> $this->config->get('config_limit_admin')
 		);
-		
-		$feedbacks = $this->model_extension_module_formcreator->getFeedbackAll($filter_data);
-		$feedback_total = $this->model_extension_module_formcreator->getTotalFeedbacks($filter_data);
 
-		$module_options = $this->model_extension_module_formcreator->getFeedbackOptions('');
-		$data['module_names'] = $this->model_extension_module_formcreator->getFeedbackOptions('module_name');
+		if($this->model_extension_module_formcreator->isInstallModule()) {
 
-		foreach ($module_options as $module_option) {
-			$data['feedback_module_options'][] = array(
-				'module_id'   => $module_option['module_id'],
-				'module_name' => $module_option['name'],
-				'module_url'  => $this->url->link('extension/module/formcreator&module_id='.$module_option['module_id'], 'user_token=' . $this->session->data['user_token'], true),
-			);
-		}
+            $feedbacks = $this->model_extension_module_formcreator->getFeedbackAll($filter_data);
+            $feedback_total = $this->model_extension_module_formcreator->getTotalFeedbacks($filter_data);
 
-		foreach ($feedbacks as $feedback ) {
-				if ($feedback['status'] == 'noread'){
-					$status = 'Не прочитан';
-				} else {
-					$status = 'Прочитан';
-				}
-				$data['feedbacks'][] = array(
-				'fedback_id' 		=> $feedback['fedback_id'],
-				'date' 				=> $feedback['date'],
-				'module_name' 		=> $feedback['module_name'],
-				'page_link'	   	    => $feedback['page_link'],
-				'status' 		  	=> $status,
-				'feedback_array'	=> unserialize($feedback['feedback_array']),
-			);	
-		}
+            $module_options = $this->model_extension_module_formcreator->getFeedbackOptions('');
+            $data['module_names'] = $this->model_extension_module_formcreator->getFeedbackOptions('module_name');
+
+            foreach ($module_options as $module_option) {
+                $data['feedback_module_options'][] = array(
+                    'module_id' => $module_option['module_id'],
+                    'module_name' => $module_option['name'],
+                    'module_url' => $this->url->link('extension/module/formcreator&module_id=' . $module_option['module_id'], 'user_token=' . $this->session->data['user_token'], true),
+                );
+            }
+
+            foreach ($feedbacks as $feedback) {
+                if ($feedback['status'] == 'noread') {
+                    $status = 'Не прочитан';
+                } else {
+                    $status = 'Прочитан';
+                }
+                $data['feedbacks'][] = array(
+                    'fedback_id' => $feedback['fedback_id'],
+                    'date' => $feedback['date'],
+                    'module_name' => $feedback['module_name'],
+                    'page_link' => $feedback['page_link'],
+                    'status' => $status,
+                    'feedback_array' => unserialize($feedback['feedback_array']),
+                );
+            }
 
 
-		$url = '';
+            $url = '';
 
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-		if (isset($this->request->get['filter_text'])) {
-			$url .= '&filter_text=' . urlencode(html_entity_decode($this->request->get['filter_text'], ENT_QUOTES, 'UTF-8'));
-		}
-		if (isset($this->request->get['filter_noread'])) {
-			$url .= '&filter_noread=' . urlencode(html_entity_decode($this->request->get['filter_noread'], ENT_QUOTES, 'UTF-8'));
-		}
+            if (isset($this->request->get['filter_name'])) {
+                $url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+            }
+            if (isset($this->request->get['filter_text'])) {
+                $url .= '&filter_text=' . urlencode(html_entity_decode($this->request->get['filter_text'], ENT_QUOTES, 'UTF-8'));
+            }
+            if (isset($this->request->get['filter_noread'])) {
+                $url .= '&filter_noread=' . urlencode(html_entity_decode($this->request->get['filter_noread'], ENT_QUOTES, 'UTF-8'));
+            }
 
-		if ($order == 'ASC') {
-			$url .= '&order=DESC';
-		} else {
-			$url .= '&order=ASC';
-		}
+            if ($order == 'ASC') {
+                $url .= '&order=DESC';
+            } else {
+                $url .= '&order=ASC';
+            }
 
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
+            if (isset($this->request->get['page'])) {
+                $url .= '&page=' . $this->request->get['page'];
+            }
 
-		$data['sort_name'] = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . '&sort=module_name' . $url, true);
-		$data['sort_date'] = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . '&sort=date' . $url, true);
-		$data['sort_id'] = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . '&sort=fedback_id' . $url, true);
+            $data['sort_name'] = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . '&sort=module_name' . $url, true);
+            $data['sort_date'] = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . '&sort=date' . $url, true);
+            $data['sort_id'] = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . '&sort=fedback_id' . $url, true);
 
-		$url = '';
+            $url = '';
 
-	
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-		if (isset($this->request->get['filter_text'])) {
-			$url .= '&filter_text=' . urlencode(html_entity_decode($this->request->get['filter_text'], ENT_QUOTES, 'UTF-8'));
-		}
-		if (isset($this->request->get['filter_noread'])) {
-			$url .= '&filter_noread=' . urlencode(html_entity_decode($this->request->get['filter_noread'], ENT_QUOTES, 'UTF-8'));
-		}
 
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
+            if (isset($this->request->get['filter_name'])) {
+                $url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+            }
+            if (isset($this->request->get['filter_text'])) {
+                $url .= '&filter_text=' . urlencode(html_entity_decode($this->request->get['filter_text'], ENT_QUOTES, 'UTF-8'));
+            }
+            if (isset($this->request->get['filter_noread'])) {
+                $url .= '&filter_noread=' . urlencode(html_entity_decode($this->request->get['filter_noread'], ENT_QUOTES, 'UTF-8'));
+            }
 
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
+            if (isset($this->request->get['sort'])) {
+                $url .= '&sort=' . $this->request->get['sort'];
+            }
 
-		if (isset($this->request->get['path'])) {
-			$url .= '&path=' . $this->request->get['path'];
-		}
+            if (isset($this->request->get['order'])) {
+                $url .= '&order=' . $this->request->get['order'];
+            }
 
-		$pagination = new Pagination();
-		$pagination->total = $feedback_total;
-		$pagination->page = $page;
-		$pagination->limit = $this->config->get('config_limit_admin');
-		$pagination->url = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}', true);
+            if (isset($this->request->get['path'])) {
+                $url .= '&path=' . $this->request->get['path'];
+            }
 
-		$data['pagination'] = $pagination->render();
-		$data['filter_name'] = $filter_name;
-		$data['filter_text'] = $filter_text;
-		$data['filter_noread'] = $filter_noread;
-		
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($feedback_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($feedback_total - $this->config->get('config_limit_admin'))) ? $feedback_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $feedback_total, ceil($feedback_total / $this->config->get('config_limit_admin')));
+            $pagination = new Pagination();
+            $pagination->total = $feedback_total;
+            $pagination->page = $page;
+            $pagination->limit = $this->config->get('config_limit_admin');
+            $pagination->url = $this->url->link('extension/module/formcreator/getlist', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}', true);
 
-		$data['sort'] = $sort;
-		$data['order'] = $order;
+            $data['pagination'] = $pagination->render();
+            $data['filter_name'] = $filter_name;
+            $data['filter_text'] = $filter_text;
+            $data['filter_noread'] = $filter_noread;
+
+            $data['results'] = sprintf($this->language->get('text_pagination'), ($feedback_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($feedback_total - $this->config->get('config_limit_admin'))) ? $feedback_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $feedback_total, ceil($feedback_total / $this->config->get('config_limit_admin')));
+
+            $data['sort'] = $sort;
+            $data['order'] = $order;
+            $data['module_installed'] = 1;
+        } else {
+		    $data['module_installed'] = 0;
+        }
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

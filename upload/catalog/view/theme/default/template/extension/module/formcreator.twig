@@ -33,6 +33,12 @@
 	.loaded .preloader {
 		display: none;
 	}
+	.checkbox.form-control {
+		border: none;
+		box-shadow: none;
+		height: auto;
+		padding: 0;
+	}
 </style>
 <div id="form-creator-{{ module_id }}" class="form-creator box">
 	{% if module_name %}
@@ -210,25 +216,22 @@
 					beforeSend: function() {
 						$('fieldset#formcreator{{ module_id }}').attr("disabled", "disabled")
 						$('.submit-row').removeClass('loaded')
+						$('.form-creator .alert-danger').remove();
 					},
 					complete: function() {
 						$('fieldset#formcreator{{ module_id }}').prop('disabled', false)
+						$('.submit-row').addClass('loaded');
+						document.body.classList.remove('loaded_hiding');
 					},
 					success: function(data) {
 						if (data['error']) {
-							$('.form-creator .text-danger').remove();
-							if (data['error']) {
-								var error = $('<div class="text-left alert alert-danger">'+ data['error'] +'</div>');
-								that.prepend(error);
-							}
+							var error = $('<div class="text-left alert alert-danger">'+ data['error'] +'</div>');
+							that.prepend(error);
 							return;
 						}
 						$('.form-creator .alert-danger').remove();
 						alertForm({form: that, msg: data['success']});
-						that.find('input[type=\'text\']').val('');
-						that.find('textarea').val('');
-						$('.submit-row').addClass('loaded');
-						document.body.classList.remove('loaded_hiding');
+						that.trigger("reset");
 					}, 
 				});
 			});

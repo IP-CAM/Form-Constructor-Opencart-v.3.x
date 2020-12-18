@@ -28,7 +28,7 @@
 			<div class="panel-body">
 
 				<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-formcreator" class="form-horizontal">
-					<div class="form-group">
+					<div class="form-group required">
 						<label class="col-sm-2 control-label" for="input-name">{{ text_module_name }}</label>
 						<div class="col-sm-10">
 							<input type="text" name="name" value="{{ name }}" placeholder="{{ text_module_name }}" id="input-name" class="form-control" />
@@ -242,11 +242,15 @@
 									</div>                  
 								</td>
 								<td>
-									{% if field.required %}
-									<input type="checkbox" name="formcreator_field[{{ field_row }}][required]" checked="checked" class="form-control"/>
+									{% if field.type != 'checkbox' %}
+										{% if field.required %}
+										<input type="checkbox" name="formcreator_field[{{ field_row }}][required]" checked="checked" class="form-control"/>
+										{% else %}
+										<input type="checkbox" name="formcreator_field[{{ field_row }}][required]" class="form-control"/>
+										{% endif %}
 									{% else %}
-									<input type="checkbox" name="formcreator_field[{{ field_row }}][required]" class="form-control"/>
-									{% endif %} 
+										<input type="checkbox" name="formcreator_field[{{ field_row }}][required]" class="form-control hidden"/>
+									{% endif %}
 								</td>              
 								<td class="text-left"><button type="button" onclick="$('#field-row{{ field_row }}').remove();" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
 							</tr>
@@ -319,6 +323,9 @@
 	} else {
 			$('.option'+ row).remove();
 	}
+	if($(select).val() == 'checkbox') {
+		$(select).parent().parent().find('.form-control[data-required="true"]').addClass('hidden')
+	}
 }
 
 
@@ -350,7 +357,7 @@ function addfieldRow() {
 // status
 	html += '  <td class="text-center" style="width:10%"><input type="checkbox" name="formcreator_field[' + field_row + '][field_status]" value="on" checked="checked" class="form-control" /></td>';
 // required
-	html +='<td class="text-center"><input type="checkbox" name="formcreator_field[' + field_row + '][required]" class="form-control"/></td>'
+	html +='<td class="text-center"><input type="checkbox" data-required="true" name="formcreator_field[' + field_row + '][required]" class="form-control"/></td>'
 
 	html += '  <td class="text-left"><button type="button" onclick="$(\'#field-row' + field_row + '\').remove();" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
 	html += '</tr>';  
@@ -358,6 +365,8 @@ function addfieldRow() {
 	$('#field tbody').append(html);
 	field_row++;
 }
+
+
 
 function addSelect(){
 

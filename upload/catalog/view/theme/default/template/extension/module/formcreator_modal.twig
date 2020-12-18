@@ -215,25 +215,23 @@
           beforeSend: function() {
             $('fieldset#formcreator{{ module_id }}').attr("disabled", "disabled")
             $('.submit-row').removeClass('loaded')
+            $('#feedbackModal{{ module_id }} .modal-body .alert-danger').remove();
           },
           complete: function() {
             $('fieldset#formcreator{{ module_id }}').prop('disabled', false)
+            $('.submit-row').addClass('loaded');
+            document.body.classList.remove('loaded_hiding');
           },
           success: function(data) {
             if (data['error']) {
-              $('#feedbackModal .text-danger').remove();
-              if (data['error']) {
-                var error = $('<span class="text-danger">'+ data['error'] +'</span>');
-                $('#feedbackModal .modal-body').prepend(error);
-              }
+              var error = $('<div class="text-left alert alert-danger">'+ data['error'] +'</div>');
+              $('#feedbackModal{{ module_id }} .modal-body').prepend(error);
               return;
             }
-            $('#feedbackModal .text-danger').remove();
+            $('#feedbackModal{{ module_id }} .modal-body .alert-danger').remove();
             alertForm({form: that, msg: data['success']});
-            that.find('input[type=\'text\']').val('');
-            that.find('textarea').val('');
-            $('.submit-row').addClass('loaded');
-            document.body.classList.remove('loaded_hiding');
+            that.trigger("reset");
+
           }, 
         });
       });

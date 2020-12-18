@@ -32,7 +32,7 @@ class ModelExtensionModuleFormcreator extends Model{
 
 	}
 	
-	private function isInstallModule(){
+	public function isInstallModule(){
 		$query = $this->db->query("SHOW TABLES LIKE '%formcreator%'");
 
 		return $query->num_rows;

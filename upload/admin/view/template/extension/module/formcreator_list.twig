@@ -19,7 +19,9 @@
 						</ul>
 					 
 				</div>
+				{% if module_installed %}
 				<a href="{{ add_module }}" form="form-account" data-toggle="tooltip" title="{{ button_create_form }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+				{% endif %}
 				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
 				<button type="button" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ button_text_confirm }}') ? $('#form-list').submit() : false;"><i class="fa fa-trash-o"></i></button>
 			</div>
@@ -37,123 +39,124 @@
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 			</div>
 		{% endif %}
+		{% if module_installed %}
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title"><i class="fa fa-list-ol"></i> {{ text_feedback_list }}</h3>
 			</div>
 			<div class="panel-body">
-			<div class="well">
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="form-group">
-								<label class="control-label" for="input-name">{{ text_filter_name_form }}</label>
-								<select class="form-control" name="filter_name">
-										<option value="">{{ text_filter_all_form }}</option>
-										{% for feedback_name in module_names %}
-											{% if filter_name == feedback_name.module_name%}
-												 <option value="{{ feedback_name.module_name}}" selected="selected">{{ feedback_name.module_name}}</option>
-											{% else %}
-												 <option value="{{ feedback_name.module_name}}">{{ feedback_name.module_name}}</option>
-											{% endif %} 	
-										{% endfor %}
-								</select> 
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="form-group">
-								<label class="control-label" for="input-name">{{ text_filter_text_form }}</label>
-								<input type="text" name="filter_text" value="{{ filter_text }}" placeholder="{{ text_entry_text }}" id="input-name" class="form-control" autocomplete="off"><ul class="dropdown-menu"></ul>
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<div class="form-group">
-								<label class="control-label" for="filter_noread">{{ text_filter_status }}</label>
-								<select name="filter_noread" class="form-control">
-									{% if filter_noread == 'noread' %}
-										<option value="">{{ text_filter_allstatus }}</option>
-										<option value="noread" selected="selected">{{ text_status_noread }}</option>
-										<option value="read">{{ text_status_read }}</option>
-									{% elseif  filter_noread == 'read' %}
-										<option value="">{{ text_filter_allstatus }}</option>
-										 <option value="noread">{{ text_status_noread }}</option>
-										<option value="read" selected="selected">{{ text_status_read }}</option>
-									{% else %}
-										<option value="" selected="selected">{{ text_filter_allstatus }}</option>
-										 <option value="noread">{{ text_status_noread }}</option>
-										<option value="read">{{ text_status_read }}</option>
-									{% endif %} 
-								</select>
-						</div>
-					</div>
-					<div class="col-sm-2">
+				<div class="well">
+					<div class="row">
+						<div class="col-sm-4">
 							<div class="form-group">
-								<button type="button" id="button-filter" class="btn btn-primary pull-right"><i class="fa fa-search"></i>{{ button_filter }}</button>
+									<label class="control-label" for="input-name">{{ text_filter_name_form }}</label>
+									<select class="form-control" name="filter_name">
+											<option value="">{{ text_filter_all_form }}</option>
+											{% for feedback_name in module_names %}
+												{% if filter_name == feedback_name.module_name%}
+													 <option value="{{ feedback_name.module_name}}" selected="selected">{{ feedback_name.module_name}}</option>
+												{% else %}
+													 <option value="{{ feedback_name.module_name}}">{{ feedback_name.module_name}}</option>
+												{% endif %}
+											{% endfor %}
+									</select>
 							</div>
 						</div>
-				</div>
-			</div>
-				<form role="form" action="{{ deleteFeedback }}" method="post" enctype="multipart/form-data" id="form-list" class="form-horizontal">
-				<div>
-				 {% if feedbacks %}
-				 <div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover">
-						<thead>
-							<td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);"></td>
-							<td style="width: 1px;" class="text-center">
-								{% if sort == 'fedback_id' %}
-										<a href="{{ sort_id }}" class="{{ order|lower }}">ID</a>
-								{% else %}
-										<a href="{{ sort_id }}">ID</a>
-								{% endif %}
-							</td>
-							<td>
-								{% if sort == 'date' %}
-										<a href="{{ sort_date }}" class="{{ order|lower }}">{{ text_date }}</a>
-								{% else %}
-										<a href="{{ sort_date }}">{{ text_date }}</a>
-								{% endif %} 
-							</td>
-							<td>
-								{% if sort == 'module_name' %}
-										<a href="{{ sort_name }}" class="{{ order|lower }}">{{ text_name_form }}</a>
-								{% else %}
-										<a href="{{ sort_name }}">{{ text_name_form }}</a>
-								{% endif %} 
-							</td>
-							<td>{{ text_page_send }}</td>
-							<td>{{ entry_status }}</td>
-							<td></td>
-						</thead>
-						<tbody>
-								{% for feedback in feedbacks %}
-								 <tr> 
-									 <td><input type="checkbox" name="selected[]" value="{{ feedback.fedback_id}}"></td>
-									 <td>{{ feedback.fedback_id}}</td>
-									 <td>{{ feedback.date}}</td>
-									 <td>{{ feedback.module_name}}</td>
-									 <td><a href="{{ feedback.page_link}}" target="_blank">{{ text_page_link }}</a></td>
-									 <td>{{ feedback.status}}</td>
-									 <td>
-									 	{% if feedback.status == text_status_noread %}
-									 		<button type="button" class="btn btn-warning" data-toggle="modal" title="{{ text_more }}" data-target="#feedbackMore_{{ feedback.fedback_id}}">
-												<i class="fa fa-eye"></i>
-												</button>
+						<div class="col-sm-4">
+							<div class="form-group">
+									<label class="control-label" for="input-name">{{ text_filter_text_form }}</label>
+									<input type="text" name="filter_text" value="{{ filter_text }}" placeholder="{{ text_entry_text }}" id="input-name" class="form-control" autocomplete="off"><ul class="dropdown-menu"></ul>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div class="form-group">
+									<label class="control-label" for="filter_noread">{{ text_filter_status }}</label>
+									<select name="filter_noread" class="form-control">
+										{% if filter_noread == 'noread' %}
+											<option value="">{{ text_filter_allstatus }}</option>
+											<option value="noread" selected="selected">{{ text_status_noread }}</option>
+											<option value="read">{{ text_status_read }}</option>
+										{% elseif  filter_noread == 'read' %}
+											<option value="">{{ text_filter_allstatus }}</option>
+											 <option value="noread">{{ text_status_noread }}</option>
+											<option value="read" selected="selected">{{ text_status_read }}</option>
 										{% else %}
-											<button type="button" class="btn btn-success" data-toggle="modal" title="{{ text_more }}" data-target="#feedbackMore_{{ feedback.fedback_id}}">
-												<i class="fa fa-eye"></i>
-											</button>
-										{% endif %} 
-									</td>
-								 </tr>
-								{% endfor %}
-						</tbody>
-					 </table>
-				 </div>
-				{% else %}
-					<h2>{{ text_nomassage }}</h2>
-				{% endif %} 
+											<option value="" selected="selected">{{ text_filter_allstatus }}</option>
+											 <option value="noread">{{ text_status_noread }}</option>
+											<option value="read">{{ text_status_read }}</option>
+										{% endif %}
+									</select>
+							</div>
+						</div>
+						<div class="col-sm-2">
+								<div class="form-group">
+									<button type="button" id="button-filter" class="btn btn-primary pull-right"><i class="fa fa-search"></i>{{ button_filter }}</button>
+								</div>
+							</div>
+					</div>
 				</div>
-			</form>
+				<form role="form" action="{{ deleteFeedback }}" method="post" enctype="multipart/form-data" id="form-list" class="form-horizontal">
+					<div>
+					{% if feedbacks %}
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover">
+								<thead>
+									<td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);"></td>
+									<td style="width: 1px;" class="text-center">
+										{% if sort == 'fedback_id' %}
+												<a href="{{ sort_id }}" class="{{ order|lower }}">ID</a>
+										{% else %}
+												<a href="{{ sort_id }}">ID</a>
+										{% endif %}
+									</td>
+									<td>
+										{% if sort == 'date' %}
+												<a href="{{ sort_date }}" class="{{ order|lower }}">{{ text_date }}</a>
+										{% else %}
+												<a href="{{ sort_date }}">{{ text_date }}</a>
+										{% endif %}
+									</td>
+									<td>
+										{% if sort == 'module_name' %}
+												<a href="{{ sort_name }}" class="{{ order|lower }}">{{ text_name_form }}</a>
+										{% else %}
+												<a href="{{ sort_name }}">{{ text_name_form }}</a>
+										{% endif %}
+									</td>
+									<td>{{ text_page_send }}</td>
+									<td>{{ entry_status }}</td>
+									<td></td>
+								</thead>
+								<tbody>
+									{% for feedback in feedbacks %}
+									 <tr>
+										 <td><input type="checkbox" name="selected[]" value="{{ feedback.fedback_id}}"></td>
+										 <td>{{ feedback.fedback_id}}</td>
+										 <td>{{ feedback.date}}</td>
+										 <td>{{ feedback.module_name}}</td>
+										 <td><a href="{{ feedback.page_link}}" target="_blank">{{ text_page_link }}</a></td>
+										 <td>{{ feedback.status}}</td>
+										 <td>
+											{% if feedback.status == text_status_noread %}
+												<button type="button" class="btn btn-warning" data-toggle="modal" title="{{ text_more }}" data-target="#feedbackMore_{{ feedback.fedback_id}}">
+													<i class="fa fa-eye"></i>
+													</button>
+											{% else %}
+												<button type="button" class="btn btn-success" data-toggle="modal" title="{{ text_more }}" data-target="#feedbackMore_{{ feedback.fedback_id}}">
+													<i class="fa fa-eye"></i>
+												</button>
+											{% endif %}
+										</td>
+									 </tr>
+									{% endfor %}
+								</tbody>
+							 </table>
+						 </div>
+					{% else %}
+						<h2>{{ text_nomassage }}</h2>
+					{% endif %}
+					</div>
+				</form>
 			{% if feedbacks %}
 					{% for feedback in feedbacks %}
 								<div class="modal fade" id="feedbackMore_{{ feedback.fedback_id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -166,7 +169,7 @@
 											</div>
 											<div class="modal-body">
 
-											 <form role="form" action="{{ saveFeedback }}" method="post" enctype="multipart/form-data" id="form-feedback{{ feedback.fedback_id}}" class="form-horizontal"> 
+											 <form role="form" action="{{ saveFeedback }}" method="post" enctype="multipart/form-data" id="form-feedback{{ feedback.fedback_id}}" class="form-horizontal">
 												<div class="table-responsive">
 													<table class="table table-striped table-bordered">
 														<thead>
@@ -208,7 +211,7 @@
 																			{% else %}
 																				<option value="noread">{{ text_status_noread }}</option>
 																				<option value="read" selected="selected">{{ text_status_read }}</option>
-																			{% endif %} 
+																			{% endif %}
 																		</select>
 																		<input type="hidden" name="feedback_id" value="{{ feedback.fedback_id}}"/>
 																	</td>
@@ -233,6 +236,9 @@
 				</div>
 			</div>
 		</div>
+		{% else %}
+			<h2>{{ text_module_not_installed }}</h2>
+		{% endif %}
 	</div>
 </div>
 <script type="text/javascript"><!--
